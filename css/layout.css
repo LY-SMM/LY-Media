@@ -1,0 +1,321 @@
+/*
+  layout.css
+  الهيكل العام: الهيدر، شريط التنقل، الفوتر، الحاويات، والعرض المتجاوب.
+*/
+
+/* ============ الهيدر ============ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(20, 21, 25, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--header-height);
+}
+
+/* الشعار */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.brand:hover {
+  color: var(--color-primary);
+}
+
+.brand__logo {
+  width: 38px;
+  height: 38px;
+}
+
+.brand__name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand__name small {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ============ التنقل ============ */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.nav__link {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-soft);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.nav__link:hover {
+  background: var(--color-surface-2);
+  color: var(--color-primary);
+}
+
+.nav__link[aria-current="page"] {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* زر قائمة الهاتف */
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+}
+
+.nav-toggle:hover {
+  background: var(--color-surface-2);
+}
+
+.nav-toggle__bars,
+.nav-toggle__bars::before,
+.nav-toggle__bars::after {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+.nav-toggle__bars::before {
+  transform: translateY(-6px);
+}
+
+.nav-toggle__bars::after {
+  transform: translateY(4px);
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars {
+  background: transparent;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars::before {
+  transform: translateY(0) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars::after {
+  transform: translateY(-2px) rotate(-45deg);
+}
+
+/* ============ الفوتر ============ */
+.site-footer {
+  margin-top: var(--space-8);
+  background: #0f1830;
+  color: #c7d0e0;
+  padding-top: var(--space-6);
+}
+
+.site-footer a {
+  color: #c7d0e0;
+}
+
+.site-footer a:hover {
+  color: #fff;
+}
+
+.footer__grid {
+  display: grid;
+  gap: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+
+.footer__brand .brand {
+  color: #fff;
+}
+
+.footer__brand p {
+  color: #9aa7bd;
+  max-width: 34ch;
+  font-size: 0.92rem;
+}
+
+.footer__col h2 {
+  color: #fff;
+  font-size: 0.98rem;
+  margin-bottom: var(--space-3);
+}
+
+.footer__col li + li {
+  margin-top: var(--space-2);
+}
+
+.footer__col a {
+  font-size: 0.92rem;
+}
+
+.footer__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-4) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #8390a6;
+}
+
+.footer__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.footer__credit {
+  color: #a8b3c7;
+  font-weight: 600;
+}
+
+/* ============ التخطيط العام ============ */
+.page {
+  padding-block: var(--space-6) var(--space-7);
+}
+
+.page-head {
+  margin-bottom: var(--space-6);
+}
+
+.page-head h1 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-bottom: var(--space-2);
+}
+
+.page-head p {
+  color: var(--color-text-muted);
+  margin-bottom: 0;
+}
+
+/* شبكة موحّدة */
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* ============ الاستجابة ============ */
+@media (min-width: 640px) {
+  .footer__grid {
+    grid-template-columns: 1.4fr 1fr 1fr;
+  }
+}
+
+@media (min-width: 900px) {
+  .container {
+    padding-inline: var(--space-5);
+  }
+
+  .footer__grid {
+    grid-template-columns: 1.6fr 1fr 1fr;
+  }
+}
+
+/* قائمة الهاتف */
+@media (max-width: 860px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .nav {
+    position: fixed;
+    inset: var(--header-height) 0 auto 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-3);
+    transform: translateY(-12px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition), transform var(--transition),
+      visibility var(--transition);
+    max-height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+  }
+
+  .nav.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .nav__links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+  }
+
+  .nav__link {
+    padding: var(--space-3);
+  }
+
+  .nav__actions {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    gap: var(--space-3);
+  }
+
+  .nav__actions .btn {
+    width: 100%;
+  }
+
+  /* أهداف لمس أكبر لروابط الفوتر على الهواتف */
+  .footer__col li + li {
+    margin-top: 0;
+  }
+
+  .footer__col a {
+    display: inline-block;
+    padding-block: var(--space-2);
+  }
+}

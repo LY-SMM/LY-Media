@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="إدارة مزوّدي الخدمات وربط الـAPI في ليبيا GO." />
+    <title>المزوّدون — إدارة ليبيا GO</title>
+
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/pages.css" />
+    <link rel="stylesheet" href="admin.css" />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("libyago-admin-theme");
+          document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <script src="../js/icons.js" defer></script>
+    <script src="../js/ui.js" defer></script>
+    <script src="../js/main.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/supabase-client.js" defer></script>
+    <script src="../js/auth-session.js" defer></script>
+    <script src="../js/validation.js" defer></script>
+    <script src="admin.js" defer></script>
+  </head>
+  <body data-page="providers">
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
+
+    <div class="admin__layout">
+      <aside class="admin__side" id="admin-side"></aside>
+
+      <div class="admin__main">
+        <header class="admin__top" id="admin-top"></header>
+
+        <main id="main" tabindex="-1" class="admin__content">
+          <section class="card">
+            <div class="card__head">
+              <h2 class="card__title">
+                <span data-icon="grid" data-icon-size="20"></span>
+                إضافة مزوّد
+              </h2>
+              <button class="btn btn--outline btn--sm" type="button" id="providers-sync">
+                <span data-icon="bolt" data-icon-size="16"></span>
+                مزامنة الخدمات
+              </button>
+            </div>
+            <p class="card__text">
+              تُستورد الخدمات من المزوّدين تلقائيًا عبر الـAPI. أضف بيانات المزوّد
+              (رابط الـAPI والمفتاح) لتفعيل المزامنة.
+            </p>
+
+            <form class="form" id="provider-form" novalidate>
+              <div class="field">
+                <label class="field__label" for="prov-name">اسم المزوّد</label>
+                <input class="input" id="prov-name" type="text" required />
+              </div>
+              <div class="field">
+                <label class="field__label" for="prov-url">رابط الـAPI</label>
+                <input class="input" id="prov-url" type="url" dir="ltr" placeholder="https://provider.example/api/v2" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="prov-key">مفتاح الـAPI</label>
+                <input class="input" id="prov-key" type="password" dir="ltr" autocomplete="off" placeholder="••••••••" />
+                <p class="field__hint">يُخزَّن المفتاح على الخادم فقط ولا يظهر للعملاء.</p>
+              </div>
+              <button class="btn btn--primary" type="submit">إضافة مزوّد</button>
+            </form>
+          </section>
+
+          <section class="card card--padless">
+            <div class="card__head">
+              <h2 class="card__title">
+                <span data-icon="grid" data-icon-size="20"></span>
+                المزوّدون
+              </h2>
+            </div>
+            <span class="table-hint">اسحب الجدول أفقيًا لعرض بقية الأعمدة.</span>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">الاسم</th>
+                    <th scope="col">رابط الـAPI</th>
+                    <th scope="col">المفتاح</th>
+                    <th scope="col">الرصيد</th>
+                    <th scope="col">مفعّل</th>
+                    <th scope="col">إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="providers-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

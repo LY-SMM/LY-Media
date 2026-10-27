@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="إعدادات حسابك في ليبيا GO — معلومات الحساب وإعدادات الواجهة."
+    />
+    <title>الإعدادات — ليبيا GO</title>
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("libyago-theme");
+          document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <script src="js/icons.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/supabase-client.js" defer></script>
+    <script src="js/auth-session.js" defer></script>
+    <script src="js/settings.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
+
+    <noscript>
+      <style>
+        [data-icon] {
+          display: none;
+        }
+      </style>
+      <div class="container" style="padding-top: 1rem">
+        <div class="alert alert--warning" role="alert">
+          <span class="visually-hidden">تنبيه:</span>
+          <div>
+            <p class="alert__title">JavaScript غير مفعّل</p>
+            <p>بعض أزرار الإعدادات تحتاج جافاسكربت للعمل.</p>
+          </div>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- ================= الهيدر ================= -->
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-label="فتح القائمة"
+        >
+          <span class="nav-toggle__bars"></span>
+        </button>
+
+        <a class="brand" href="index.html">
+          <img
+            class="brand__logo"
+            src="assets/logo.svg"
+            alt=""
+            width="38"
+            height="38"
+          />
+          <span class="brand__name">ليبيا GO</span>
+        </a>
+
+        <div style="width: 44px"></div>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1" class="page">
+      <div class="container">
+        <div class="page-head">
+          <h1>الإعدادات</h1>
+          <p>أدر معلومات حسابك وتفضيلات الواجهة من مكان واحد.</p>
+        </div>
+
+        <div class="settings-layout">
+          <!-- قائمة جانبية -->
+          <nav class="settings-nav" aria-label="أقسام الإعدادات">
+            <a href="#account">معلومات الحساب</a>
+            <a href="#interface">إعدادات الواجهة</a>
+          </nav>
+
+          <div class="stack">
+            <!-- ============ معلومات الحساب ============ -->
+            <section class="card" id="account">
+              <div class="card__head">
+                <h2 class="card__title">
+                  <span data-icon="user" data-icon-size="20"></span>
+                  معلومات الحساب
+                </h2>
+              </div>
+
+              <hr class="hr" />
+
+              <form class="form" id="account-form" novalidate>
+                <div class="field">
+                  <label class="field__label" for="account-name">
+                    الاسم الكامل
+                  </label>
+                  <input
+                    class="input"
+                    id="account-name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    value=""
+                  />
+                </div>
+
+                <div class="field">
+                  <label class="field__label" for="account-email">
+                    البريد الإلكتروني
+                  </label>
+                  <input
+                    class="input"
+                    id="account-email"
+                    name="email"
+                    type="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    value=""
+                    dir="ltr"
+                    readonly
+                  />
+                  <p class="field__hint">
+                    لا يمكن تغيير البريد الإلكتروني حاليًا.
+                  </p>
+                </div>
+
+                <div class="info-list">
+                  <div class="info-list__row">
+                    <span class="info-list__label">معرّف الحساب</span>
+                    <span class="info-list__value" id="account-uid" dir="ltr">—</span>
+                  </div>
+                  <div class="info-list__row">
+                    <span class="info-list__label">تاريخ التسجيل</span>
+                    <span class="info-list__value" id="account-created">—</span>
+                  </div>
+                  <div class="info-list__row">
+                    <span class="info-list__label">حالة الحساب</span>
+                    <span class="info-list__value" id="account-status">
+                      <span class="badge badge--warning">جارٍ التحقق</span>
+                    </span>
+                  </div>
+                </div>
+
+                <button class="btn btn--primary" type="submit">
+                  حفظ التغييرات
+                </button>
+              </form>
+            </section>
+
+            <!-- ============ الواجهة ============ -->
+            <section class="card" id="interface">
+              <div class="card__head">
+                <h2 class="card__title">
+                  <span data-icon="settings" data-icon-size="20"></span>
+                  إعدادات الواجهة
+                </h2>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-row__text">
+                  <strong>الوضع الداكن</strong>
+                  <span>تبديل مظهر الموقع بين الفاتح والداكن.</span>
+                </div>
+                <label class="switch">
+                  <input
+                    type="checkbox"
+                    id="theme-toggle"
+                    aria-label="تفعيل الوضع الداكن"
+                  />
+                  <span class="switch__track"></span>
+                </label>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-row__text">
+                  <strong>اللغة</strong>
+                  <span>لغة الواجهة الحالية: العربية (RTL).</span>
+                </div>
+                <span class="badge badge--muted">العربية</span>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-row__text">
+                  <strong>تسجيل الخروج</strong>
+                  <span>إنهاء الجلسة الحالية على هذا الجهاز.</span>
+                </div>
+                <button
+                  class="btn btn--outline btn--sm"
+                  type="button"
+                  id="logout-btn"
+                >
+                  <span data-icon="logout" data-icon-size="16"></span>
+                  خروج
+                </button>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= الفوتر ================= -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer__bottom">
+          <span>© <span data-year>2026</span> ليبيا GO. جميع الحقوق محفوظة.</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

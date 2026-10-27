@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>خريطة قاعدة البيانات — ليبيا GO</title>
+    <style>
+      :root {
+        --bg: #101114;
+        --surface: #18191e;
+        --surface-2: #202127;
+        --border: #2a2b32;
+        --text: #f0f0f3;
+        --muted: #a8a9b4;
+        --primary: #8295ff;
+        --green: #7fd6a2;
+        --amber: #f0b357;
+        --pink: #e6a4c6;
+        --radius: 12px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Tajawal", "Segoe UI", Tahoma, sans-serif;
+        line-height: 1.7;
+      }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 20px 80px; }
+      h1 { font-size: 1.7rem; margin: 0 0 6px; }
+      h2 {
+        font-size: 1.15rem;
+        margin: 42px 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      p.lead { color: var(--muted); margin: 0 0 8px; }
+      code {
+        font-family: ui-monospace, Consolas, monospace;
+        background: var(--surface-2);
+        padding: 1px 6px;
+        border-radius: 5px;
+        font-size: 0.86em;
+        direction: ltr;
+        display: inline-block;
+      }
+
+      .legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 0.85rem; margin-top: 14px; }
+      .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-inline-end: 6px; }
+
+      /* شبكة الكيانات */
+      .entity-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+        gap: 14px;
+      }
+      .entity {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 15px;
+        position: relative;
+      }
+      .entity::before {
+        content: "";
+        position: absolute;
+        inset-inline-start: 0;
+        top: 14px;
+        bottom: 14px;
+        width: 3px;
+        border-radius: 3px;
+        background: var(--accent, var(--primary));
+        opacity: 0.85;
+      }
+      .entity__name {
+        font-family: ui-monospace, Consolas, monospace;
+        font-size: 0.8rem;
+        color: var(--muted);
+        direction: ltr;
+        text-align: left;
+      }
+      .entity__title { font-weight: 700; font-size: 1rem; margin: 2px 0 8px; }
+      .entity ul { margin: 0; padding-inline-start: 0; list-style: none; }
+      .entity li {
+        font-size: 0.83rem;
+        color: var(--muted);
+        padding: 3px 0;
+        border-bottom: 1px dashed rgba(255,255,255,0.05);
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .entity li:last-child { border-bottom: 0; }
+      .entity li b { color: var(--text); font-weight: 500; }
+
+      .tag {
+        display: inline-block;
+        font-size: 0.68rem;
+        padding: 1px 7px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        margin-inline-start: 4px;
+      }
+      .tag--pk { color: var(--amber); border-color: rgba(240,179,87,0.4); }
+      .tag--fk { color: var(--primary); border-color: rgba(130,149,255,0.4); }
+      .tag--snap { color: var(--green); border-color: rgba(127,214,162,0.4); }
+
+      /* خط العلاقات */
+      .relation {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 14px 0;
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+      .chip {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-family: ui-monospace, Consolas, monospace;
+        font-size: 0.8rem;
+        direction: ltr;
+        color: var(--text);
+      }
+      .arrow { color: var(--primary); font-size: 1.1rem; }
+      .arrow small { display: block; font-size: 0.62rem; color: var(--muted); direction: rtl; }
+      .arrow--null { color: var(--amber); }
+
+      /* تدفقات */
+      .flow {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 14px;
+      }
+      .flow h3 { margin: 0 0 12px; font-size: 0.98rem; }
+      .steps { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; }
+      .step {
+        flex: 1 1 130px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 9px 11px;
+        font-size: 0.8rem;
+        min-width: 120px;
+      }
+      .step b { display: block; color: var(--text); font-size: 0.82rem; margin-bottom: 2px; }
+      .step span { color: var(--muted); }
+      .step--start { border-color: rgba(130,149,255,0.45); }
+
+      .note {
+        background: rgba(130,149,255,0.08);
+        border: 1px solid rgba(130,149,255,0.28);
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 0.87rem;
+        color: var(--muted);
+        margin-top: 16px;
+      }
+      .note b { color: var(--text); }
+      .warn {
+        background: rgba(240,179,87,0.08);
+        border-color: rgba(240,179,87,0.3);
+      }
+      footer { margin-top: 46px; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 16px; }
+      @media print {
+        body { background: #fff; color: #111; }
+        .entity, .flow, .chip, .step { background: #fff; border-color: #ccc; }
+        .entity__name, .entity li, .step span, p.lead { color: #444; }
+        .note { background: #f4f6ff; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>خريطة قاعدة البيانات والتدفقات</h1>
+      <p class="lead">
+        مخطط مرئي مبسّط لليبيا GO. افتح الملف في أي متصفح — لا يحتاج إنترنت ولا أي مكتبة.
+      </p>
+
+      <div class="legend">
+        <span><i class="dot" style="background:#f0b357"></i> مفتاح أساسي</span>
+        <span><i class="dot" style="background:#8295ff"></i> مفتاح أجنبي</span>
+        <span><i class="dot" style="background:#7fd6a2"></i> لقطة محفوظة</span>
+        <span><i class="dot" style="background:#a8a9b4"></i> حقل عادي</span>
+      </div>
+
+      <h2>1. الهوية والمحفظة</h2>
+      <div class="entity-grid">
+        <div class="entity" style="--accent:#8295ff">
+          <div class="entity__name">auth.users</div>
+          <div class="entity__title">الهوية (تديرها Supabase)</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span></span><span>uuid</span></li>
+            <li><span><b>email</b></span><span>text</span></li>
+            <li><span>كلمة المرور مشفّرة</span><span>—</span></li>
+          </ul>
+        </div>
+
+        <div class="entity" style="--accent:#f0b357">
+          <div class="entity__name">public.profiles</div>
+          <div class="entity__title">ملف المستخدم</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span> <span class="tag tag--fk">FK</span></span><span>uuid</span></li>
+            <li><span><b>role</b></span><span>user / admin</span></li>
+            <li><span><b>is_active</b></span><span>bool</span></li>
+            <li><span><b>full_name</b></span><span>text</span></li>
+            <li><span><b>phone</b></span><span>text</span></li>
+          </ul>
+        </div>
+
+        <div class="entity" style="--accent:#f0b357">
+          <div class="entity__name">public.wallets</div>
+          <div class="entity__title">الرصيد</div>
+          <ul>
+            <li><span><b>user_id</b> <span class="tag tag--pk">PK</span> <span class="tag tag--fk">FK</span></span><span>uuid</span></li>
+            <li><span><b>balance</b></span><span>numeric</span></li>
+            <li><span><b>updated_at</b></span><span>timestamptz</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="relation">
+        <span class="chip">auth.users</span>
+        <span class="arrow">←<small>trigger عند التسجيل</small></span>
+        <span class="chip">profiles</span>
+        <span class="arrow">+</span>
+        <span class="chip">wallets</span>
+        <span class="arrow">←</span>
+        <span class="chip">handle_new_user()</span>
+      </div>
+
+      <h2>2. الخدمات والطلبات</h2>
+      <div class="entity-grid">
+        <div class="entity" style="--accent:#8295ff">
+          <div class="entity__name">public.providers</div>
+          <div class="entity__title">المزوّدون</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span></span><span>bigint</span></li>
+            <li><span><b>name</b></span><span>text</span></li>
+            <li><span><b>api_url / api_key</b></span><span>text</span></li>
+            <li><span><b>is_active</b></span><span>bool</span></li>
+            <li><span><b>balance</b></span><span>numeric</span></li>
+          </ul>
+        </div>
+
+        <div class="entity" style="--accent:#8295ff">
+          <div class="entity__name">public.services</div>
+          <div class="entity__title">الخدمات المستوردة</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span></span><span>bigint</span></li>
+            <li><span><b>provider_id</b> <span class="tag tag--fk">FK</span> <span class="tag">NULL</span></span><span>bigint</span></li>
+            <li><span><b>provider_service_id</b></span><span>text</span></li>
+            <li><span><b>rate / cost / markup</b></span><span>numeric</span></li>
+            <li><span><b>is_active</b></span><span>bool</span></li>
+            <li><span><b>platform</b> <span class="tag">auto/manual</span></span><span>text</span></li>
+          </ul>
+        </div>
+
+        <div class="entity" style="--accent:#7fd6a2">
+          <div class="entity__name">public.orders</div>
+          <div class="entity__title">الطلبات</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span></span><span>bigint</span></li>
+            <li><span><b>user_id</b> <span class="tag tag--fk">FK</span></span><span>uuid</span></li>
+            <li><span><b>service_id</b> <span class="tag tag--fk">FK</span> <span class="tag">SET NULL</span></span><span>bigint</span></li>
+            <li><span><b>service_name</b> <span class="tag tag--snap">snapshot</span></span><span>text</span></li>
+            <li><span><b>quantity / charge</b></span><span>int / numeric</span></li>
+            <li><span><b>status</b></span><span>pending → …</span></li>
+            <li><span><b>target</b></span><span>text</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="relation">
+        <span class="chip">providers</span>
+        <span class="arrow">←<small>1 : N</small></span>
+        <span class="chip">services</span>
+        <span class="arrow arrow--null">←<small>SET NULL عند الحذف</small></span>
+        <span class="chip">orders</span>
+      </div>
+
+      <h2>3. المال والاستلامات</h2>
+      <div class="entity-grid">
+        <div class="entity" style="--accent:#7fd6a2">
+          <div class="entity__name">public.transactions</div>
+          <div class="entity__title">السجل المالي (لا يُحذف)</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span></span><span>bigint</span></li>
+            <li><span><b>user_id</b> <span class="tag tag--fk">FK</span></span><span>uuid</span></li>
+            <li><span><b>type</b></span><span>deposit / order</span></li>
+            <li><span><b>amount</b></span><span>numeric ±</span></li>
+            <li><span><b>description</b></span><span>text</span></li>
+          </ul>
+        </div>
+
+        <div class="entity" style="--accent:#e6a4c6">
+          <div class="entity__name">public.recharges</div>
+          <div class="entity__title">طلبات شحن المحفظة</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span></span><span>bigint</span></li>
+            <li><span><b>public_id</b></span><span>uuid</span></li>
+            <li><span><b>user_id</b> <span class="tag tag--fk">FK</span></span><span>uuid</span></li>
+            <li><span><b>company</b></span><span>libyana / almadar</span></li>
+            <li><span><b>amount</b></span><span>numeric</span></li>
+            <li><span><b>status</b></span><span>pending / success / failed</span></li>
+            <li><span><b>credited</b> <span class="tag tag--snap">حارس</span></span><span>bool</span></li>
+          </ul>
+        </div>
+
+        <div class="entity" style="--accent:#a8a9b4">
+          <div class="entity__name">public.wallet_receivers</div>
+          <div class="entity__title">أرقام الاستقبال</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span></span><span>bigint</span></li>
+            <li><span><b>company</b></span><span>text</span></li>
+            <li><span><b>phone</b></span><span>text</span></li>
+            <li><span><b>is_active</b></span><span>bool</span></li>
+            <li><span><b>sort_order</b></span><span>int</span></li>
+          </ul>
+        </div>
+
+        <div class="entity" style="--accent:#a8a9b4">
+          <div class="entity__name">public.app_settings</div>
+          <div class="entity__title">إعدادات عامة</div>
+          <ul>
+            <li><span><b>key</b> <span class="tag tag--pk">PK</span></span><span>text</span></li>
+            <li><span><b>value</b></span><span>text</span></li>
+            <li><span><b>updated_at</b></span><span>timestamptz</span></li>
+          </ul>
+        </div>
+
+        <div class="entity" style="--accent:#8295ff">
+          <div class="entity__name">public.service_classification_rules</div>
+          <div class="entity__title">قواعد تصنيف المنصات</div>
+          <ul>
+            <li><span><b>id</b> <span class="tag tag--pk">PK</span></span><span>bigserial</span></li>
+            <li><span><b>platform</b></span><span>text</span></li>
+            <li><span><b>keyword</b></span><span>text</span></li>
+            <li><span><b>priority</b></span><span>int</span></li>
+            <li><span><b>is_active</b></span><span>bool</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>4. التدفقات الأساسية</h2>
+
+      <div class="flow">
+        <h3>تسجيل مستخدم جديد</h3>
+        <div class="steps">
+          <div class="step step--start"><b>1. النموذج</b><span>register.html</span></div>
+          <div class="step"><b>2. Auth</b><span>signUp()</span></div>
+          <div class="step"><b>3. Trigger</b><span>handle_new_user</span></div>
+          <div class="step"><b>4. profiles</b><span>role = user</span></div>
+          <div class="step"><b>5. wallets</b><span>balance = 0</span></div>
+          <div class="step"><b>6. جلسة</b><span>wallet.html</span></div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <h3>إنشاء طلب</h3>
+        <div class="steps">
+          <div class="step step--start"><b>1. اختيار</b><span>منصة ← خدمة</span></div>
+          <div class="step"><b>2. RPC</b><span>create_order</span></div>
+          <div class="step"><b>3. تحقق</b><span>is_active + مزوّد</span></div>
+          <div class="step"><b>4. خصم</b><span>FOR UPDATE</span></div>
+          <div class="step"><b>5. orders</b><span>+ service_name</span></div>
+          <div class="step"><b>6. transactions</b><span>type = order</span></div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <h3>شحن المحفظة</h3>
+        <div class="steps">
+          <div class="step step--start"><b>1. طلب</b><span>recharge_start</span></div>
+          <div class="step"><b>2. recharges</b><span>pending</span></div>
+          <div class="step"><b>3. اعتماد</b><span>admin_recharge_action</span></div>
+          <div class="step"><b>4. status</b><span>success</span></div>
+          <div class="step"><b>5. credit</b><span>credited = false?</span></div>
+          <div class="step"><b>6. رصيد</b><span>+ amount</span></div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <h3>حذف مزوّد (تام)</h3>
+        <div class="steps">
+          <div class="step step--start"><b>1. تأكيد</b><span>عدد الخدمات/الطلبات</span></div>
+          <div class="step"><b>2. RPC</b><span>delete_provider_cascade</span></div>
+          <div class="step"><b>3. تحقق</b><span>is_admin</span></div>
+          <div class="step"><b>4. لقطة</b><span>orders.service_name</span></div>
+          <div class="step"><b>5. حذف</b><span>services</span></div>
+          <div class="step"><b>6. حذف</b><span>providers</span></div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <h3>مزامنة الخدمات وتصنيفها</h3>
+        <div class="steps">
+          <div class="step step--start"><b>1. مشرف</b><span>sync-services</span></div>
+          <div class="step"><b>2. API</b><span>action=services</span></div>
+          <div class="step"><b>3. قواعد</b><span>classification_rules</span></div>
+          <div class="step"><b>4. upsert</b><span>provider_service_id</span></div>
+          <div class="step"><b>5. تصنيف</b><span>auto / manual</span></div>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>قاعدة ذهبية:</b> لا تُعدَّل الأرصدة ولا تُحذف الطلبات من الواجهة.
+        كل عملية مالية تمر عبر دالة SQL، وكل جدول محمي بـ RLS.
+      </div>
+
+      <div class="note warn">
+        <b>تحذير:</b> حذف المزوّد يحذف خدماته نهائيًا. الطلبات تبقى محفوظة
+        (المبلغ والكمية والهدف والحالة واسم الخدمة)، لكن رابط الخدمة يصبح <code>NULL</code>.
+      </div>
+
+      <footer>
+        ليبيا GO — خريطة توضيحية. الملفات المرجعية:
+        <code>docs/ARCHITECTURE.md</code> و <code>docs/DATABASE-AND-FLOWS.md</code>.
+      </footer>
+    </div>
+  </body>
+</html>

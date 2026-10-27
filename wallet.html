@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="محفظة ليبيا GO — شحن الرصيد عبر ليبيانا والمدار ومتابعة سجل العمليات."
+    />
+    <title>المحفظة — ليبيا GO</title>
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("libyago-theme");
+          document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <script src="js/icons.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/supabase-client.js" defer></script>
+    <script src="js/auth-session.js" defer></script>
+    <script src="js/validation.js" defer></script>
+    <script src="js/wallet.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
+
+    <noscript>
+      <style>
+        [data-icon] {
+          display: none;
+        }
+      </style>
+      <div class="container" style="padding-top: 1rem">
+        <div class="alert alert--warning" role="alert">
+          <span class="visually-hidden">تنبيه:</span>
+          <div>
+            <p class="alert__title">JavaScript غير مفعّل</p>
+            <p>
+              لا يمكن عرض الرصيد أو سجل العمليات أو إرسال طلبات الشحن بدون
+              جافاسكربت.
+            </p>
+          </div>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- ================= الهيدر ================= -->
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-label="فتح القائمة"
+        >
+          <span class="nav-toggle__bars"></span>
+        </button>
+
+        <a class="brand" href="index.html">
+          <img
+            class="brand__logo"
+            src="assets/logo.svg"
+            alt=""
+            width="38"
+            height="38"
+          />
+          <span class="brand__name">ليبيا GO</span>
+        </a>
+
+        <div style="width: 44px"></div>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1" class="page">
+      <div class="container">
+        <div class="page-head">
+          <h1>المحفظة</h1>
+          <p>أضف رصيدًا إلى محفظتك عبر ليبيانا أو المدار، وتابع سجل عملياتك.</p>
+        </div>
+
+        <div class="wallet-layout">
+          <!-- ============ العمود الرئيسي ============ -->
+          <div class="stack">
+            <!-- بطاقة الرصيد -->
+            <section class="balance-card" aria-label="رصيد المحفظة">
+              <span class="balance-card__label">
+                <span data-icon="wallet" data-icon-size="18"></span>
+                الرصيد الحالي
+              </span>
+              <p class="balance-card__value">
+                <span id="wallet-balance">—</span>
+                <small>د.ل</small>
+              </p>
+              <div class="balance-card__foot">
+                <span class="badge badge--success">متاح للاستخدام</span>
+                <span class="balance-card__note">
+                  يُستخدم لطلب الخدمات من المنصة
+                </span>
+              </div>
+            </section>
+
+            <!-- نموذج الشحن -->
+            <section class="card">
+              <div class="card__head">
+                <h2 class="card__title">
+                  <span data-icon="card" data-icon-size="20"></span>
+                  شحن الرصيد
+                </h2>
+              </div>
+
+              <div class="recharge-steps">
+                <span class="recharge-step">اختر شركة التحويل</span>
+                <span class="recharge-step">حوّل المبلغ إلى رقم الاستقبال</span>
+                <span class="recharge-step">أكمل بيانات النموذج وأرسل</span>
+              </div>
+
+              <form class="form" id="recharge-form" novalidate>
+                <fieldset class="fieldset-reset">
+                  <legend class="field__label">
+                    شركة التحويل
+                  </legend>
+                  <div class="choice-group">
+                    <label class="choice">
+                      <input
+                        type="radio"
+                        name="provider"
+                        id="provider-libyana"
+                        value="libyana"
+                        checked
+                      />
+                      <span class="choice__mark"></span>
+                      <span class="choice__text">
+                        <strong>ليبيانا</strong>
+                        <span>Libyana</span>
+                      </span>
+                    </label>
+                    <label class="choice">
+                      <input
+                        type="radio"
+                        name="provider"
+                        id="provider-almadar"
+                        value="almadar"
+                      />
+                      <span class="choice__mark"></span>
+                      <span class="choice__text">
+                        <strong>المدار</strong>
+                        <span>Almadar</span>
+                      </span>
+                    </label>
+                  </div>
+                </fieldset>
+
+                <!-- منطقة رقم الاستقبال -->
+                <div class="pay-number" id="pay-number">
+                  <div>
+                    <div class="pay-number__meta">رقم استقبال التحويل</div>
+                    <div class="pay-number__value" data-pay-value>— — — — —</div>
+                    <div class="pay-number__meta" data-pay-meta>
+                      لم يتم تحديد رقم الاستقبال بعد. سيضيفه فريق الإدارة قريبًا.
+                    </div>
+                  </div>
+                  <button
+                    class="btn btn--outline btn--sm"
+                    type="button"
+                    data-copy-number
+                    hidden
+                  >
+                    <span data-icon="copy" data-icon-size="16"></span>
+                    نسخ
+                  </button>
+                </div>
+
+                <div class="field">
+                  <label class="field__label" for="recharge-amount">
+                    المبلغ (د.ل)
+                  </label>
+                  <input
+                    class="input"
+                    id="recharge-amount"
+                    name="amount"
+                    type="number"
+                    inputmode="decimal"
+                    min="1"
+                    max="1000"
+                    step="0.5"
+                    placeholder="مثال: 50"
+                    dir="ltr"
+                    required
+                  />
+                  <p class="field__hint">أقل مبلغ 1 د.ل وأقصى مبلغ 1000 د.ل.</p>
+                  <p class="field__error" aria-live="polite"></p>
+                </div>
+
+                <div class="field">
+                  <label class="field__label" for="recharge-phone">
+                    رقم الهاتف الذي تم التحويل منه
+                  </label>
+                  <input
+                    class="input"
+                    id="recharge-phone"
+                    name="phone"
+                    type="tel"
+                    inputmode="numeric"
+                    autocomplete="tel"
+                    placeholder="09XXXXXXXX"
+                    dir="ltr"
+                    required
+                  />
+                  <p class="field__hint">
+                    أدخل الرقم الليبي المكوّن من 10 أرقام والذي أُجري منه التحويل.
+                  </p>
+                  <p class="field__error" aria-live="polite"></p>
+                </div>
+
+                <div class="demo-note">
+                  <span data-icon="alert" data-icon-size="16"></span>
+                  <span>
+                    حوّل المبلغ أولًا إلى رقم الاستقبال أعلاه، ثم أرسل الطلب.
+                    تتم مطابقة التحويل تلقائيًا ويُضاف الرصيد بعد التحقق.
+                  </span>
+                </div>
+
+                <button class="btn btn--primary btn--block btn--lg" type="submit">
+                  إرسال طلب الشحن
+                </button>
+              </form>
+            </section>
+
+            <!-- سجل العمليات -->
+            <section class="card card--padless">
+              <div class="card__head">
+                <h2 class="card__title">
+                  <span data-icon="clock" data-icon-size="20"></span>
+                  سجل عمليات الشحن
+                </h2>
+              </div>
+              <div class="table-wrap">
+                <table class="table table--stack">
+                  <caption class="visually-hidden">
+                    سجل عمليات الشحن
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">رقم العملية</th>
+                      <th scope="col">التاريخ</th>
+                      <th scope="col">الشركة</th>
+                      <th scope="col">رقم الهاتف</th>
+                      <th scope="col">المبلغ</th>
+                      <th scope="col">الحالة</th>
+                    </tr>
+                  </thead>
+                  <tbody id="history-body">
+                    <!-- تُضاف الصفوف عبر JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <!-- ============ العمود الجانبي ============ -->
+          <aside class="stack" aria-label="معلومات مساعدة">
+            <section class="card">
+              <div class="card__head">
+                <h2 class="card__title">
+                  <span data-icon="info" data-icon-size="20"></span>
+                  حالات الطلب
+                </h2>
+              </div>
+              <ul class="badge-list">
+                <li>
+                  <span class="badge badge--pending">بانتظار التحقق</span>
+                  <p>تم استلام الطلب وهو قيد المراجعة.</p>
+                </li>
+                <li>
+                  <span class="badge badge--success">ناجح</span>
+                  <p>تم تأكيد التحويل وإضافة الرصيد.</p>
+                </li>
+                <li>
+                  <span class="badge badge--failed">فاشل</span>
+                  <p>لم يتم العثور على التحويل أو تعذّر تأكيده.</p>
+                </li>
+                <li>
+                  <span class="badge badge--review">يحتاج إلى مراجعة</span>
+                  <p>يحتاج الطلب تدخّلًا يدويًا من فريق الدعم.</p>
+                </li>
+              </ul>
+            </section>
+
+            <section class="card">
+              <div class="card__head">
+                <h2 class="card__title">
+                  <span data-icon="headset" data-icon-size="20"></span>
+                  تحتاج مساعدة؟
+                </h2>
+              </div>
+              <p class="text-muted text-sm">
+                إذا لم يظهر الرصيد بعد التحويل خلال وقت معتاد، تواصل مع فريق
+                الدعم مع رقم العملية.
+              </p>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= الفوتر ================= -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer__bottom">
+          <span>© <span data-year>2026</span> ليبيا GO. جميع الحقوق محفوظة.</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

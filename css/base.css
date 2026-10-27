@@ -1,0 +1,318 @@
+/*
+  base.css
+  المتغيرات العامة، إعادة الضبط، الخطوط، والأنماط الأساسية.
+  يتم تحميل هذا الملف في جميع الصفحات.
+*/
+
+/* ============ المتغيرات ============ */
+:root {
+  /* الألوان الأساسية */
+  --color-primary: #1d4ed8;
+  --color-primary-600: #1e40af;
+  --color-primary-700: #1e3a8a;
+  --color-primary-soft: #eff4ff;
+  --color-accent: #0ea5a5;
+  --color-accent-soft: #e6fbfa;
+
+  /* الحالات */
+  --color-success: #16a34a;
+  --color-success-soft: #e9f9ef;
+  --color-warning: #d97706;
+  --color-warning-soft: #fdf3e3;
+  --color-danger: #dc2626;
+  --color-danger-soft: #fdecec;
+  --color-info: #2563eb;
+  --color-info-soft: #eaf1ff;
+
+  /* نصوص حالات الشارات والتنبيهات (تُستبدل في السمة الداكنة) */
+  --status-success-fg: #14602f;
+  --status-warning-fg: #8a5307;
+  --status-danger-fg: #9b1c1c;
+  --status-info-fg: #1e40af;
+
+  /* الرمادي */
+  --color-bg: #f6f8fc;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f5fb;
+  --color-border: #e3e8f1;
+  --color-border-strong: #8b95a8;
+  --color-text: #131a2a;
+  --color-text-soft: #4a5568;
+  --color-text-muted: #616c7e;
+
+  /* الظلال */
+  --shadow-sm: 0 1px 2px rgba(19, 26, 42, 0.06);
+  --shadow-md: 0 6px 18px rgba(19, 26, 42, 0.08);
+  --shadow-lg: 0 18px 45px rgba(19, 26, 42, 0.12);
+
+  /* الحدود */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* المسافات */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* الخطوط */
+  --font-sans: "Tajawal", "Segoe UI", "Cairo", system-ui, -apple-system,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Cairo", "Tajawal", system-ui, sans-serif;
+
+  /* التخطيط */
+  --container: 1140px;
+  --header-height: 64px;
+
+  /* الانتقالات */
+  --transition-fast: 140ms ease;
+  --transition: 220ms ease;
+}
+
+/* ============ إعادة الضبط ============ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  line-height: 1.35;
+  margin: 0 0 var(--space-3);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+p {
+  margin: 0 0 var(--space-3);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-600);
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* يمنع المتصفحات من تجاوز الخاصية hidden عبر أنماط display */
+[hidden] {
+  display: none !important;
+}
+
+::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ============ إمكانية الوصول ============ */
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -60px;
+  inset-inline-start: var(--space-4);
+  z-index: 1200;
+  background: var(--color-primary);
+  color: #fff;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  transition: top var(--transition);
+}
+
+.skip-link:focus {
+  top: var(--space-3);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============ أدوات مساعدة ============ */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.mt-4 {
+  margin-top: var(--space-4);
+}
+
+.mt-6 {
+  margin-top: var(--space-6);
+}
+
+.mb-5 {
+  margin-bottom: var(--space-5);
+}
+
+.text-sm {
+  font-size: 0.9rem;
+}
+
+.stack > * + * {
+  margin-top: var(--space-4);
+}
+
+[id] {
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+}
+
+/* كشف العناصر عند التمرير */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============ السمة الداكنة ============ */
+html[data-theme="dark"] {
+  --color-bg: #101114;
+  --color-surface: #18191e;
+  --color-surface-2: #202127;
+  --color-border: #2a2b32;
+  --color-border-strong: #3a3b42;
+  --color-text: #f0f0f3;
+  --color-text-soft: #c7c8d0;
+  --color-text-muted: #9698a4;
+  --color-primary: #8295ff;
+  --color-primary-600: #6f82f5;
+  --color-primary-700: #5f72e6;
+  --color-primary-soft: #252b49;
+  --color-accent: #8295ff;
+  --color-accent-soft: #252b49;
+
+  --color-success-soft: #1f2f24;
+  --color-warning-soft: #2f2819;
+  --color-danger-soft: #2f1f1f;
+  --color-info-soft: #242b49;
+
+  /* درجات مخصّصة للخلفيات الداكنة */
+  --color-success: #92d6a6;
+  --color-warning: #f0b357;
+  --color-danger: #ff8a8a;
+  --color-info: #93b4ff;
+
+  --status-success-fg: #92d6a6;
+  --status-warning-fg: #f0b357;
+  --status-danger-fg: #ff9d9d;
+  --status-info-fg: #93b4ff;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.55);
+}
+
+html[data-theme="dark"] .site-header {
+  background: rgba(20, 21, 25, 0.9);
+}
+
+html[data-theme="dark"] .hero {
+  background: linear-gradient(160deg, #18191e 0%, #101114 60%);
+}
+
+html[data-theme="dark"] .table thead th {
+  color: var(--color-text-soft);
+}
+
+html[data-theme="dark"] .btn--google {
+  --btn-bg: #222b40;
+  --btn-fg: var(--color-text);
+}

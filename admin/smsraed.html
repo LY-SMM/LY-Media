@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="ربط ليبيا GO بخدمة SMS RAEED لمطابقة شحن المحافظ." />
+    <title>ربط SMS RAEED — إدارة ليبيا GO</title>
+
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/pages.css" />
+    <link rel="stylesheet" href="admin.css" />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("libyago-admin-theme");
+          document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <script src="../js/icons.js" defer></script>
+    <script src="../js/ui.js" defer></script>
+    <script src="../js/main.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/supabase-client.js" defer></script>
+    <script src="../js/auth-session.js" defer></script>
+    <script src="../js/validation.js" defer></script>
+    <script src="admin.js" defer></script>
+  </head>
+  <body data-page="smsraed">
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
+
+    <div class="admin__layout">
+      <aside class="admin__side" id="admin-side"></aside>
+
+      <div class="admin__main">
+        <header class="admin__top" id="admin-top"></header>
+
+        <main id="main" tabindex="-1" class="admin__content">
+          <section class="card">
+            <div class="card__head">
+              <h2 class="card__title">
+                <span data-icon="globe" data-icon-size="20"></span>
+                ربط SMS RAEED
+              </h2>
+              <a class="btn btn--outline btn--sm" href="https://m9zkx.github.io/smsraed/" target="_blank" rel="noopener">
+                <span data-icon="globe" data-icon-size="16"></span>
+                دليل الربط
+              </a>
+            </div>
+            <p class="card__text">
+              اربط المنصة بخدمة SMS RAEED لمطابقة تحويلات شحن المحافظ تلقائيًا.
+              أرسل تفاصيل كل طلب إلى نقطة <code dir="ltr">site_order</code>،
+              وتعيد الخدمة حالة الطلب (<code dir="ltr">pending/success/failed</code>).
+            </p>
+            <p class="card__text">
+              الحالة الآن:
+              <span id="smsraed-key-state"><span class="badge badge--muted">…</span></span>
+              <span id="smsraed-enabled-state"><span class="badge badge--muted">…</span></span>
+            </p>
+
+            <form class="form" id="smsraed-form" novalidate>
+              <div class="field">
+                <label class="field__label" for="smsraed-base">رابط الـAPI (site_order)</label>
+                <input
+                  class="input"
+                  id="smsraed-base"
+                  type="url"
+                  dir="ltr"
+                  placeholder="https://txguibjkbtroljtvbrlt.supabase.co/functions/v1/site_order"
+                />
+                <p class="field__hint">اترك الحقل فارغًا لاستخدام الرابط الافتراضي لخدمة SMS RAEED.</p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="smsraed-key">مفتاح API للموقع</label>
+                <input
+                  class="input"
+                  id="smsraed-key"
+                  type="password"
+                  dir="ltr"
+                  autocomplete="off"
+                  placeholder="اتركه فارغًا للإبقاء على المفتاح الحالي"
+                />
+                <p class="field__hint">
+                  مفتاح سرّي يصدره مسؤول منصة SMS RAEED، ويُخزَّن مشفّرًا على الخادم فقط.
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" style="display: flex; align-items: center; gap: 0.5rem">
+                  <input type="checkbox" id="smsraed-enabled" />
+                  تفعيل الشحن التلقائي عبر SMS RAEED
+                </label>
+                <p class="field__hint">عند التعطيل يتوقّف إنشاء طلبات الشحن ويظهر للمستخدم «الخدمة غير مفعّلة».</p>
+              </div>
+
+              <div class="form__actions" style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+                <button class="btn btn--primary" type="submit">حفظ</button>
+                <button class="btn btn--outline" type="button" id="smsraed-test">اختبار الاتصال</button>
+                <button class="btn btn--ghost" type="button" id="smsraed-clear">مسح المفتاح</button>
+              </div>
+            </form>
+
+            <pre
+              id="smsraed-test-result"
+              class="code-block"
+              dir="ltr"
+              style="margin-top: 1rem; white-space: pre-wrap; word-break: break-word"
+            ></pre>
+          </section>
+
+          <section class="card">
+            <div class="card__head">
+              <h2 class="card__title">
+                <span data-icon="info" data-icon-size="20"></span>
+                ملاحظات الربط
+              </h2>
+            </div>
+            <ul class="list">
+              <li>أرقام الاستقبال تُدار من صفحة <a href="settings.html">الإعدادات</a>، ويجب أن تكون مسجَّلة أيضًا في منصة SMS RAEED لتتم المطابقة.</li>
+              <li>توكن الجهاز يُصدره مسؤول منصة SMS RAEED ويُلصق داخل <strong>تطبيق الهاتف</strong>، ولا يُخزَّن هنا.</li>
+              <li>تُشترط مطابقة: رقم المستقبل مع أحد أرقامك + الشركة + المبلغ قدر الإمكان.</li>
+            </ul>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

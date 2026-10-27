@@ -1,0 +1,26 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env / secrets (never commit real keys)
+.env
+.env.*
+!.env.example
+
+# Node (if tooling added later)
+node_modules/
+
+# Supabase CLI local artifacts (may contain project refs / pooler URLs)
+supabase/.temp/
+supabase/.branches/
+
+# Visual reference only — not part of the shipped site
+like web/
+

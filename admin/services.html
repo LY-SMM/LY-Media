@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="الخدمات المستوردة من المزوّدين في ليبيا GO." />
+    <title>الخدمات — إدارة ليبيا GO</title>
+
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/pages.css" />
+    <link rel="stylesheet" href="admin.css" />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("libyago-admin-theme");
+          document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <script src="../js/icons.js" defer></script>
+    <script src="../js/ui.js" defer></script>
+    <script src="../js/main.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/supabase-client.js" defer></script>
+    <script src="../js/auth-session.js" defer></script>
+    <script src="../js/validation.js" defer></script>
+    <script src="../js/platforms.js" defer></script>
+    <script src="admin.js" defer></script>
+  </head>
+  <body data-page="services">
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
+
+    <div class="admin__layout">
+      <aside class="admin__side" id="admin-side"></aside>
+
+      <div class="admin__main">
+        <header class="admin__top" id="admin-top"></header>
+
+        <main id="main" tabindex="-1" class="admin__content">
+          <section class="card card--padless">
+            <div class="card__head">
+              <h2 class="card__title">
+                <span data-icon="sparkles" data-icon-size="20"></span>
+                الخدمات
+              </h2>
+              <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+                <button class="btn btn--outline btn--sm" type="button" id="services-reclassify">
+                  <span data-icon="sparkles" data-icon-size="16"></span>
+                  إعادة تصنيف تلقائي
+                </button>
+                <button class="btn btn--ghost btn--sm" type="button" id="services-cleanup">
+                  <span data-icon="x" data-icon-size="16"></span>
+                  تنظيف الخدمات غير المرتبطة
+                </button>
+                <button class="btn btn--outline btn--sm" type="button" id="services-sync">
+                  <span data-icon="bolt" data-icon-size="16"></span>
+                  مزامنة
+                </button>
+              </div>
+            </div>
+            <p class="card__text" style="padding-inline: var(--space-5)">
+              تُستورد الخدمات من المزوّدين عبر الـAPI. يمكنك هنا ضبط السعر وهامش
+              الربح وتفعيل/تعطيل الخدمة، وتصنيفها محليًا حسب المنصة. التصنيف
+              اليدوي يبقى ثابتًا ولا تغيّره المزامنة.
+            </p>
+            <div class="filters" style="padding-inline: var(--space-5); display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: flex-end;">
+              <label class="field" style="margin: 0; flex: 1 1 220px;">
+                <span class="field__label">بحث بالاسم</span>
+                <input class="input" id="services-search" type="search" placeholder="اكتب جزءًا من اسم الخدمة…" />
+              </label>
+              <label class="field" style="margin: 0; flex: 0 1 180px;">
+                <span class="field__label">المنصة</span>
+                <select class="input" id="services-platform">
+                  <option value="">كل المنصات</option>
+                </select>
+              </label>
+              <label class="field" style="margin: 0; flex: 0 1 240px;">
+                <span class="field__label">تصنيف المزوّد</span>
+                <select class="input" id="services-category">
+                  <option value="">كل التصنيفات</option>
+                </select>
+              </label>
+              <label class="field" style="margin: 0; flex: 0 1 180px;">
+                <span class="field__label">المزوّد</span>
+                <select class="input" id="services-provider">
+                  <option value="">كل المزوّدين</option>
+                </select>
+              </label>
+              <label class="field" style="margin: 0; flex: 0 1 160px;">
+                <span class="field__label">الحالة</span>
+                <select class="input" id="services-status">
+                  <option value="">الكل</option>
+                  <option value="active">مفعّلة</option>
+                  <option value="inactive">غير مفعّلة</option>
+                </select>
+              </label>
+              <button class="btn btn--ghost btn--sm" type="button" id="services-reset">تفريغ الفلاتر</button>
+            </div>
+            <div class="bulk-bar" id="services-bulk">
+              <span id="services-selected-count">لم يتم تحديد أي خدمة</span>
+              <select class="input" id="bulk-platform" aria-label="المنصة الجديدة">
+                <option value="">اختر منصة…</option>
+              </select>
+              <button class="btn btn--primary btn--sm" type="button" id="bulk-apply" disabled>
+                تطبيق التصنيف على المحدد
+              </button>
+            </div>
+            <div class="table-hint" style="padding-inline: var(--space-5); display: flex; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap;">
+              <span>اسحب الجدول أفقيًا لعرض بقية الأعمدة.</span>
+              <span id="services-count">—</span>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="table__pick">
+                      <input type="checkbox" id="services-select-all" aria-label="تحديد كل الخدمات في الصفحة" />
+                    </th>
+                    <th scope="col">الاسم</th>
+                    <th scope="col">المنصة</th>
+                    <th scope="col">تصنيف المزوّد</th>
+                    <th scope="col">المزوّد</th>
+                    <th scope="col">السعر</th>
+                    <th scope="col">هامش الربح</th>
+                    <th scope="col">مفعّلة</th>
+                    <th scope="col">إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="services-body"></tbody>
+              </table>
+            </div>
+            <div class="pager" id="services-pager" style="padding: var(--space-4) var(--space-5); display: flex; justify-content: center; align-items: center; gap: var(--space-3);"></div>
+          </section>
+
+          <section class="card" id="rules-card">
+            <div class="card__head">
+              <h2 class="card__title">
+                <span data-icon="grid" data-icon-size="20"></span>
+                قواعد التصنيف التلقائي
+              </h2>
+              <span class="badge badge--muted" id="rules-count">—</span>
+            </div>
+            <p class="card__text" style="padding-inline: var(--space-5)">
+              تُستخدم هذه الكلمات المفتاحية عند الاستيراد وعند إعادة التصنيف.
+              كل قاعدة تربط كلمة مفتاحية بمنصة واحدة.
+            </p>
+            <form id="rule-form" class="filters" style="padding-inline: var(--space-5); display:flex; flex-wrap:wrap; gap:var(--space-3); align-items:flex-end;">
+              <label class="field" style="margin:0; flex:0 1 200px;">
+                <span class="field__label">المنصة</span>
+                <select class="input" id="rule-platform" required></select>
+              </label>
+              <label class="field" style="margin:0; flex:1 1 240px;">
+                <span class="field__label">الكلمة المفتاحية</span>
+                <input class="input" id="rule-keyword" type="text" maxlength="120" placeholder="مثال: instagram أو تيك توك" required />
+              </label>
+              <label class="field" style="margin:0; flex:0 1 120px;">
+                <span class="field__label">الأولوية</span>
+                <input class="input" id="rule-priority" type="number" min="0" max="1000" value="100" dir="ltr" />
+              </label>
+              <button class="btn btn--primary btn--sm" type="submit">إضافة قاعدة</button>
+            </form>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">المنصة</th>
+                    <th scope="col">الكلمة المفتاحية</th>
+                    <th scope="col">الأولوية</th>
+                    <th scope="col">الحالة</th>
+                    <th scope="col">إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="rules-body">
+                  <tr><td colspan="5">جارٍ التحميل…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

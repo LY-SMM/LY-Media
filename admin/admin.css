@@ -1,0 +1,294 @@
+/*
+  admin.css
+  تنسيق منطقة الإدارة: قائمة جانبية منسدلة + شريط علوي + محتوى.
+  تعتمد على متغيرات الهوية الداكنة في css/base.css.
+*/
+
+.admin {
+  background: var(--color-bg);
+}
+
+.admin__layout {
+  display: block;
+  min-height: 100vh;
+}
+
+.admin__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 200ms ease, visibility 200ms ease;
+}
+
+.admin__overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.admin__side {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100dvh;
+  width: min(300px, 86vw);
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  z-index: 1200;
+  transform: translateX(105%);
+  transition: transform 250ms ease;
+  padding: var(--space-5) var(--space-4);
+  overflow-y: auto;
+}
+
+.admin__side.is-open {
+  transform: translateX(0);
+}
+
+body.admin-nav-open {
+  overflow: hidden;
+}
+
+.admin__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.admin__brand img {
+  width: 36px;
+  height: 36px;
+}
+
+.admin__brand small {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.admin__close {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.admin__close:hover {
+  background: var(--color-surface-2);
+}
+
+.admin__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.admin__nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.62rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-soft);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.admin__nav a:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.admin__nav a.is-active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.admin__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.admin__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: rgba(20, 21, 25, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.admin__top-lead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.admin__top h1 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.admin__menu-btn {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.admin__menu-btn:hover {
+  background: var(--color-surface-2);
+}
+
+.admin__menu-bars,
+.admin__menu-bars::before,
+.admin__menu-bars::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.admin__menu-bars {
+  position: relative;
+}
+
+.admin__menu-bars::before,
+.admin__menu-bars::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.admin__menu-bars::before { top: -6px; }
+.admin__menu-bars::after { top: 6px; }
+
+.admin__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.9rem;
+  color: var(--color-text-soft);
+}
+
+.admin__content {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+}
+
+/* ——— عناصر التصنيف في صفحة الخدمات ——— */
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin: var(--space-4) var(--space-5) 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-2);
+  font-size: 0.9rem;
+  color: var(--color-text-soft);
+}
+
+.bulk-bar .input {
+  flex: 0 1 200px;
+  min-width: 150px;
+}
+
+.table__pick {
+  width: 44px;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .admin__top {
+    padding: var(--space-3) var(--space-4);
+  }
+  .admin__content {
+    padding: var(--space-4);
+  }
+  .admin__who {
+    display: none;
+  }
+  .admin__top h1 {
+    font-size: 1rem;
+  }
+}
+
+
+.admin__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.admin-stat {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.admin-stat__label {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.admin-stat__value {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-top: var(--space-2);
+}
+
+.admin__toggle {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin__side,
+  .admin__overlay {
+    transition: none;
+  }
+}

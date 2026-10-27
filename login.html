@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="تسجيل الدخول إلى ليبيا GO لخدمات السوشيال ميديا." />
+    <title>تسجيل الدخول — ليبيا GO</title>
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("libyago-theme");
+          document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <script src="js/icons.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/supabase-client.js" defer></script>
+    <script src="js/auth-session.js" defer></script>
+    <script src="js/validation.js" defer></script>
+    <script src="js/auth.js" defer></script>
+  </head>
+  <body>
+    <main class="auth">
+      <div class="container auth__wrap">
+        <noscript>
+          <style>
+            [data-icon] {
+              display: none;
+            }
+          </style>
+          <div class="alert alert--warning mb-5" role="alert">
+            <span class="visually-hidden">تنبيه:</span>
+            <div>
+              <p class="alert__title">JavaScript غير مفعّل</p>
+              <p>فعّل جافاسكربت للمتابعة عبر حساب Google.</p>
+            </div>
+          </div>
+        </noscript>
+        <div class="auth__logo">
+          <a class="brand" href="index.html">
+            <img
+              class="brand__logo"
+              src="assets/logo.svg"
+              alt=""
+              width="42"
+              height="42"
+            />
+            <span class="brand__name">
+              ليبيا GO
+              <small>SMM PANEL</small>
+            </span>
+          </a>
+        </div>
+
+        <div class="auth__card">
+          <div class="auth__head">
+            <h1>تسجيل الدخول</h1>
+            <p>ادخل إلى حسابك ومحفظتك بالبريد الإلكتروني أو بحساب Google.</p>
+          </div>
+
+          <form class="form" id="email-login" novalidate>
+            <div class="field">
+              <label class="field__label" for="login-email">البريد الإلكتروني</label>
+              <input
+                class="input"
+                id="login-email"
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                dir="ltr"
+                required
+              />
+              <p class="field__error"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="login-password">كلمة المرور</label>
+              <input
+                class="input"
+                id="login-password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+              <p class="field__error"></p>
+            </div>
+            <div class="form__check">
+              <label class="checkbox">
+                <input type="checkbox" id="remember-me" checked />
+                <span>تذكّرني على هذا الجهاز</span>
+              </label>
+            </div>
+
+            <button class="btn btn--primary btn--block btn--lg" type="submit">
+              دخول
+            </button>
+          </form>
+
+          <p class="auth__divider">أو</p>
+
+          <button
+            class="btn btn--google btn--block btn--lg"
+            id="google-login"
+            type="button"
+          >
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <path
+                fill="#FFC107"
+                d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+              />
+              <path
+                fill="#FF3D00"
+                d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"
+              />
+              <path
+                fill="#4CAF50"
+                d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+              />
+              <path
+                fill="#1976D2"
+                d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+              />
+            </svg>
+            المتابعة بحساب Google
+          </button>
+        </div>
+
+        <a class="auth__back" href="index.html">← العودة إلى الصفحة الرئيسية</a>
+      </div>
+    </main>
+  </body>
+</html>

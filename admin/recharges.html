@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="مراجعة طلبات شحن المحافظ في ليبيا GO." />
+    <title>الاستلامات — إدارة ليبيا GO</title>
+
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/pages.css" />
+    <link rel="stylesheet" href="admin.css" />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("libyago-admin-theme");
+          document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <script src="../js/icons.js" defer></script>
+    <script src="../js/ui.js" defer></script>
+    <script src="../js/main.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/supabase-client.js" defer></script>
+    <script src="../js/auth-session.js" defer></script>
+    <script src="../js/validation.js" defer></script>
+    <script src="admin.js" defer></script>
+  </head>
+  <body data-page="recharges">
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
+
+    <div class="admin__layout">
+      <aside class="admin__side" id="admin-side"></aside>
+
+      <div class="admin__main">
+        <header class="admin__top" id="admin-top"></header>
+
+        <main id="main" tabindex="-1" class="admin__content">
+          <section class="card card--padless">
+            <div class="card__head">
+              <h2 class="card__title">
+                <span data-icon="wallet" data-icon-size="20"></span>
+                الاستلامات
+              </h2>
+            </div>
+            <p class="card__text" style="padding-inline: var(--space-5)">
+              تُطابق الاستلامات تلقائيًا عبر SMS RAEED. راجع الحالات التي تحتاج تدخّلًا
+              واعتمدها أو ارفضها.
+            </p>
+            <span class="table-hint">اسحب الجدول أفقيًا لعرض بقية الأعمدة.</span>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">المستخدم</th>
+                    <th scope="col">الشركة</th>
+                    <th scope="col">رقم المُرسل</th>
+                    <th scope="col">المبلغ</th>
+                    <th scope="col">الحالة</th>
+                    <th scope="col">مُضاف</th>
+                    <th scope="col">إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="recharges-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

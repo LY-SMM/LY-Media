@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="ليبيا GO — لوحة خدمات احترافية لزيادة التفاعل والمتابعين على إنستغرام وتيك توك وفيسبوك ويوتيوب."
+    />
+    <title>ليبيا GO — خدمات السوشيال ميديا</title>
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("libyago-theme");
+          document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <script src="js/icons.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/supabase-client.js" defer></script>
+    <script src="js/auth-session.js" defer></script>
+    <script src="js/platforms.js" defer></script>
+    <script src="js/services.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
+
+    <noscript>
+      <style>
+        [data-icon] {
+          display: none;
+        }
+
+        [data-reveal] {
+          opacity: 1;
+          transform: none;
+        }
+      </style>
+      <div class="container" style="padding-top: 1rem">
+        <div class="alert alert--warning" role="alert">
+          <span class="visually-hidden">تنبيه:</span>
+          <div>
+            <p class="alert__title">JavaScript غير مفعّل</p>
+            <p>فعّل جافاسكربت من إعدادات المتصفح لعرض المحتوى الكامل.</p>
+          </div>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- ================= الهيدر ================= -->
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-label="فتح القائمة"
+        >
+          <span class="nav-toggle__bars"></span>
+        </button>
+
+        <a class="brand" href="index.html">
+          <img
+            class="brand__logo"
+            src="assets/logo.svg"
+            alt=""
+            width="38"
+            height="38"
+          />
+          <span class="brand__name">ليبيا GO</span>
+        </a>
+
+        <div style="width: 44px"></div>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <!-- ================= الرصيد والخدمات ================= -->
+      <section class="section" style="padding-top: var(--space-5)">
+        <div class="container">
+          <div class="card" style="margin-bottom: var(--space-5)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap">
+              <div>
+                <div style="color:var(--color-text-muted);font-size:0.9rem">رصيدك</div>
+                <div style="font-size:1.8rem;font-weight:800" id="home-balance">—</div>
+              </div>
+              <a class="btn btn--primary" href="wallet.html">شحن الرصيد</a>
+            </div>
+          </div>
+
+          <div class="section__head" style="text-align:start;margin:0 0 var(--space-4)">
+            <h2 style="margin:0">الخدمات</h2>
+            <p style="margin:0">اختر المنصة ثم اختر الخدمة المطلوبة</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= الخدمات ================= -->
+      <section class="section" id="services" style="padding-top: 0">
+        <div class="container">
+          <div id="services-status" class="alert alert--info" role="note">
+            <span data-icon="info" data-icon-size="20"></span>
+            <div><p>جارٍ تحميل الخدمات…</p></div>
+          </div>
+
+          <div id="platforms-grid" class="service-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"></div>
+
+          <div id="services-by-platform" hidden>
+            <div style="display:flex;align-items:center;gap:10px;margin:16px 0">
+              <button class="btn btn--ghost btn--sm" id="back-to-platforms" type="button">رجوع</button>
+              <h3 style="margin:0" id="platform-title"></h3>
+            </div>
+            <div class="feature-grid" id="services-list"></div>
+          </div>
+
+          <div class="empty-state" id="services-empty" hidden>
+            <p>لا توجد خدمات متاحة حاليًا. يرجى المحاولة لاحقًا.</p>
+          </div>
+
+          <div class="card mt-6" id="order-card" hidden>
+            <div class="card__head">
+              <h2 class="card__title">
+                <span data-icon="bolt" data-icon-size="20"></span>
+                طلب خدمة
+              </h2>
+            </div>
+
+            <div class="alert alert--warning" id="order-auth-note" role="note" hidden>
+              <span data-icon="alert" data-icon-size="20"></span>
+              <div>
+                <p class="alert__title">تحتاج إلى تسجيل الدخول</p>
+                <p>
+                  سجّل الدخول أو أنشئ حسابًا لتتمكّن من إرسال الطلبات وخصم
+                  التكلفة من محفظتك.
+                </p>
+                <p class="mt-4">
+                  <a class="btn btn--primary btn--sm" href="login.html">تسجيل الدخول</a>
+                  <a class="btn btn--outline btn--sm" href="register.html">إنشاء حساب</a>
+                </p>
+              </div>
+            </div>
+
+            <form class="form" id="order-form" novalidate>
+              <div class="field">
+                <label class="field__label" for="order-service">الخدمة</label>
+                <select class="select" id="order-service" required></select>
+                <p class="field__error" aria-live="polite"></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="order-target">
+                  الرابط أو معرّف الحساب
+                </label>
+                <input
+                  class="input"
+                  id="order-target"
+                  name="target"
+                  type="text"
+                  dir="ltr"
+                  placeholder="https://..."
+                  required
+                />
+                <p class="field__hint">
+                  أدخل رابط المنشور أو الحساب، أو اسم المستخدم المطلوب.
+                </p>
+                <p class="field__error" aria-live="polite"></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="order-quantity">الكمية</label>
+                <input
+                  class="input"
+                  id="order-quantity"
+                  name="quantity"
+                  type="number"
+                  min="1"
+                  step="1"
+                  inputmode="numeric"
+                  dir="ltr"
+                  required
+                />
+                <p class="field__hint" id="order-quantity-hint">
+                  اختر خدمة لعرض الحد الأدنى والأقصى للكمية.
+                </p>
+                <p class="field__error" aria-live="polite"></p>
+              </div>
+
+              <div class="info-list">
+                <div class="info-list__row">
+                  <span class="info-list__label">التكلفة التقديرية</span>
+                  <span class="info-list__value" id="order-charge">—</span>
+                </div>
+                <div class="info-list__row">
+                  <span class="info-list__label">رصيد محفظتك</span>
+                  <span class="info-list__value" id="order-balance">—</span>
+                </div>
+              </div>
+
+              <button
+                class="btn btn--primary btn--block btn--lg"
+                type="submit"
+              >
+                إرسال الطلب
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- محتوى مختصر كما هو مطلوب -->
+    </main>
+
+    <!-- ================= الفوتر ================= -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer__bottom">
+          <span>© <span data-year>2026</span> ليبيا GO. جميع الحقوق محفوظة.</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
