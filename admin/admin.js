@@ -397,12 +397,12 @@
       .order("id", { ascending: true })
       .then(function (res) {
         if (res.error) {
-          tbody.innerHTML = '<tr><td colspan="5">تعذّر تحميل المزوّدين.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6">تعذّر تحميل المزوّدين.</td></tr>';
           return;
         }
         const rows = res.data || [];
         if (!rows.length) {
-          tbody.innerHTML = '<tr><td colspan="5">لا يوجد مزوّدون بعد. أضف أول مزوّد من الأعلى.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6">لا يوجد مزوّدون بعد. أضف أول مزوّد من الأعلى.</td></tr>';
           return;
         }
         tbody.innerHTML = rows
