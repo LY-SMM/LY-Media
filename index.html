@@ -95,34 +95,32 @@
 
     <main id="main" tabindex="-1">
       <!-- ================= الرصيد والخدمات ================= -->
-      <section class="section" style="padding-top: var(--space-5)">
+      <section class="section" style="padding-block: var(--space-4) 0">
         <div class="container">
-          <div class="card" style="margin-bottom: var(--space-5)">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap">
-              <div>
-                <div style="color:var(--color-text-muted);font-size:0.9rem">رصيدك</div>
-                <div style="font-size:1.8rem;font-weight:800" id="home-balance">—</div>
-              </div>
-              <a class="btn btn--primary" href="wallet.html">شحن الرصيد</a>
+          <div class="balance-summary">
+            <div>
+              <span class="balance-summary__label">رصيدك</span>
+              <span class="balance-summary__value" id="home-balance">—</span>
             </div>
+            <a class="btn btn--primary btn--sm" href="wallet.html">شحن الرصيد</a>
           </div>
 
-          <div class="section__head" style="text-align:start;margin:0 0 var(--space-4)">
-            <h2 style="margin:0">الخدمات</h2>
-            <p style="margin:0">اختر المنصة ثم اختر الخدمة المطلوبة</p>
+          <div class="section__head" style="text-align:start;margin:0 0 var(--space-3)">
+            <h2 style="margin:0;font-size:1.15rem">الخدمات</h2>
+            <p style="margin:0;font-size:0.9rem">اختر المنصة ثم اختر الخدمة المطلوبة</p>
           </div>
         </div>
       </section>
 
       <!-- ================= الخدمات ================= -->
-      <section class="section" id="services" style="padding-top: 0">
+      <section class="section" id="services" style="padding-top: var(--space-4)">
         <div class="container">
           <div id="services-status" class="alert alert--info" role="note">
             <span data-icon="info" data-icon-size="20"></span>
             <div><p>جارٍ تحميل الخدمات…</p></div>
           </div>
 
-          <div id="platforms-grid" class="service-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"></div>
+          <div id="platforms-grid" class="service-grid"></div>
 
           <div id="services-by-platform" hidden>
             <div style="display:flex;align-items:center;gap:10px;margin:16px 0">

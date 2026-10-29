@@ -282,7 +282,7 @@
     };
     Promise.all([
       c.from("profiles").select("*", { count: "exact", head: true }),
-      c.from("providers").select("*", { count: "exact", head: true }),
+      c.from("providers").select("id", { count: "exact", head: true }),
       c.from("services").select("*", { count: "exact", head: true }),
       c.from("orders").select("*", { count: "exact", head: true }),
       c.from("recharges").select("*", { count: "exact", head: true }).in("status", ["pending", "needs_review"]),
@@ -392,7 +392,7 @@
     const tbody = el("providers-body");
     if (!tbody) return;
     c.from("providers")
-      .select("*")
+      .select("id, name, api_url, has_api_key, balance, is_active")
       .order("sort_order", { ascending: true })
       .order("id", { ascending: true })
       .then(function (res) {
@@ -411,7 +411,9 @@
               '<tr data-id="' + p.id + '">' +
               '<td><input class="input js-name" type="text" value="' + escapeHtml(p.name) + '" style="max-width:160px" /></td>' +
               '<td><input class="input js-url" type="url" dir="ltr" value="' + escapeHtml(p.api_url || "") + '" style="max-width:220px" placeholder="https://..." /></td>' +
-              '<td><input class="input js-key" type="password" dir="ltr" value="' + escapeHtml(p.api_key || "") + '" style="max-width:180px" placeholder="API key" autocomplete="off" /></td>' +
+              '<td><input class="input js-key" type="password" dir="ltr" value="" style="max-width:180px" placeholder="' +
+                (p.has_api_key ? "محفوظ — اكتب قيمة جديدة للتغيير" : "API key") +
+                '" autocomplete="new-password" /></td>' +
               "<td>" + fmt(p.balance) + "</td>" +
               '<td><input type="checkbox" class="js-active" ' + (p.is_active ? "checked" : "") + " /></td>" +
               "<td>" +
@@ -445,12 +447,15 @@
   }
 
   function saveProvider(id, row) {
+    const keyInput = row.querySelector(".js-key");
     const patch = {
       name: row.querySelector(".js-name").value.trim(),
       api_url: row.querySelector(".js-url").value.trim() || null,
-      api_key: row.querySelector(".js-key").value.trim() || null,
       is_active: row.querySelector(".js-active").checked,
     };
+    // لا نمسح المفتاح المحفوظ: يُحدَّث فقط عند إدخال قيمة جديدة.
+    const newKey = keyInput ? keyInput.value.trim() : "";
+    if (newKey) patch.api_key = newKey;
     if (!patch.name) { window.UI.toast("اسم المزوّد مطلوب.", { type: "warning" }); return; }
     client()
       .from("providers")
@@ -458,6 +463,10 @@
       .eq("id", id)
       .then(function (res) {
         if (res.error) { fail("تعذّر حفظ المزوّد."); return; }
+        if (keyInput && newKey) {
+          keyInput.value = "";
+          keyInput.placeholder = "محفوظ — اكتب قيمة جديدة للتغيير";
+        }
         ok("تم حفظ المزوّد.");
       });
   }
@@ -1454,9 +1463,7 @@
     const keyState = el("smsraed-key-state");
     if (keyState) {
       keyState.innerHTML = s.key_set
-        ? '<span class="badge badge--success">المفتاح مضبوط ••••' +
-          escapeHtml(s.key_hint || "") +
-          "</span>"
+        ? '<span class="badge badge--success">المفتاح محفوظ</span>'
         : '<span class="badge badge--danger">لا يوجد مفتاح</span>';
     }
     const enState = el("smsraed-enabled-state");

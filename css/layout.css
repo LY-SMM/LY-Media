@@ -147,17 +147,18 @@
 /* ============ الفوتر ============ */
 .site-footer {
   margin-top: var(--space-8);
-  background: #0f1830;
-  color: #c7d0e0;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-soft);
   padding-top: var(--space-6);
 }
 
 .site-footer a {
-  color: #c7d0e0;
+  color: var(--color-text-soft);
 }
 
 .site-footer a:hover {
-  color: #fff;
+  color: var(--color-text);
 }
 
 .footer__grid {
@@ -167,17 +168,17 @@
 }
 
 .footer__brand .brand {
-  color: #fff;
+  color: var(--color-text);
 }
 
 .footer__brand p {
-  color: #9aa7bd;
+  color: var(--color-text-muted);
   max-width: 34ch;
   font-size: 0.92rem;
 }
 
 .footer__col h2 {
-  color: #fff;
+  color: var(--color-text);
   font-size: 0.98rem;
   margin-bottom: var(--space-3);
 }
@@ -191,7 +192,7 @@
 }
 
 .footer__bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--color-border);
   padding: var(--space-4) 0;
   display: flex;
   flex-wrap: wrap;
@@ -199,7 +200,7 @@
   align-items: center;
   justify-content: space-between;
   font-size: 0.85rem;
-  color: #8390a6;
+  color: var(--color-text-muted);
 }
 
 .footer__badges {
@@ -209,7 +210,7 @@
 }
 
 .footer__credit {
-  color: #a8b3c7;
+  color: var(--color-text-soft);
   font-weight: 600;
 }
 
@@ -252,6 +253,12 @@
 
   .footer__grid {
     grid-template-columns: 1.6fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-footer {
+    margin-top: var(--space-6);
   }
 }
 

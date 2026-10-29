@@ -157,6 +157,40 @@
   padding-block: var(--space-7);
 }
 
+/* ملخّص الرصيد في الصفحة الرئيسية */
+.balance-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-primary) 14%, var(--color-surface)),
+    var(--color-surface)
+  );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.balance-summary__label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+}
+
+.balance-summary__value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 /* قسم بخلفية مختلفة عن الخلفية الرئيسية */
 .section--alt {
   background: var(--color-surface-2);
@@ -345,23 +379,35 @@
    المحفظة
    ============================================================ */
 .balance-card {
-  background: linear-gradient(135deg, #16213e 0%, #1d4ed8 130%);
+  background: linear-gradient(135deg, #1c1d23 0%, #191a1f 60%, #1e2236 100%);
+  background:
+    radial-gradient(
+      120% 150% at 100% 0%,
+      color-mix(in srgb, var(--color-primary) 26%, transparent) 0%,
+      transparent 58%
+    ),
+    linear-gradient(135deg, #1c1d23 0%, #191a1f 60%, #1e2236 100%);
+  border: 1px solid var(--color-border);
+  border: 1px solid
+    color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
   color: #fff;
   border-radius: var(--radius-lg);
-  padding: var(--space-6);
+  padding: var(--space-5) var(--space-6);
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
 .balance-card::after {
   content: "";
   position: absolute;
   inset-inline-end: -60px;
-  bottom: -80px;
-  width: 220px;
-  height: 220px;
+  bottom: -90px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(130, 149, 255, 0.12);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
 }
 
 .balance-card__label {
@@ -369,7 +415,7 @@
   align-items: center;
   gap: var(--space-2);
   font-size: 0.9rem;
-  color: #c3d0f0;
+  color: #b9bccb;
   margin-bottom: var(--space-2);
 }
 
@@ -384,7 +430,7 @@
 .balance-card__value small {
   font-size: 1rem;
   font-weight: 600;
-  color: #c3d0f0;
+  color: #b9bccb;
   margin-inline-start: var(--space-2);
 }
 
@@ -397,7 +443,7 @@
 }
 
 .balance-card__note {
-  color: #c3d0f0;
+  color: #b9bccb;
   font-size: 0.82rem;
 }
 
@@ -618,6 +664,14 @@
 }
 
 @media (max-width: 640px) {
+  .section {
+    padding-block: var(--space-5);
+  }
+
+  .balance-summary {
+    padding: var(--space-3) var(--space-4);
+  }
+
   .page {
     padding-block: var(--space-5) var(--space-6);
   }
@@ -665,10 +719,10 @@
 .service-card {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
   width: 100%;
-  padding: 15px;
+  padding: 12px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -676,17 +730,19 @@
   font: inherit;
   text-align: start;
   cursor: pointer;
-  transition: background 150ms ease, border-color 150ms ease;
+  transition: background 150ms ease, border-color 150ms ease,
+    transform 150ms ease;
 }
 
 .service-card:hover {
   background: var(--color-surface-2);
   border-color: var(--color-border-strong);
+  transform: translateY(-1px);
 }
 
 .service-logo {
-  flex: 0 0 43px;
-  height: 43px;
+  flex: 0 0 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   background: var(--color-surface-2);
@@ -700,9 +756,22 @@
 }
 
 .service-name {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
-  margin-bottom: 4px;
+  line-height: 1.35;
+  margin-bottom: 2px;
+}
+
+@media (min-width: 900px) {
+  .service-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .service-card {
+    padding: 14px;
+    gap: 12px;
+  }
 }
 
 @media (max-width: 420px) {
